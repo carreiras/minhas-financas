@@ -25,9 +25,7 @@ public class LancamentoController {
     @PostMapping
     public ResponseEntity salvar(@RequestBody LancamentoDto lancamentoDto) {
         try {
-            Lancamento lancamento = converter(lancamentoDto);
-            lancamento = lancamentoService.salvar(lancamento);
-            return new ResponseEntity(lancamento, HttpStatus.CREATED);
+            return new ResponseEntity(lancamentoService.salvar(converter(lancamentoDto)), HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -39,9 +37,7 @@ public class LancamentoController {
                 .map(entity -> {
                     try {
                         lancamentoDto.setId(entity.getId());
-                        Lancamento lancamento = converter(lancamentoDto);
-                        lancamento = lancamentoService.atualizar(lancamento);
-                        return ResponseEntity.ok(lancamento);
+                        return ResponseEntity.ok(lancamentoService.atualizar(converter(lancamentoDto)));
                     } catch (RegraNegocioException e) {
                         return ResponseEntity.badRequest().body(e.getMessage());
                     }

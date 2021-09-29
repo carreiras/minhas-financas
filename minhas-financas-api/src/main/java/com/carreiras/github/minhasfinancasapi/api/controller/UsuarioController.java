@@ -18,27 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/usuarios")
 public class UsuarioController {
 
-    private final UsuarioService service;
+    private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity salvar(@RequestBody UsuarioDto dto) {
+    public ResponseEntity salvar(@RequestBody UsuarioDto usuarioDto) {
         Usuario usuario = Usuario.builder()
-                .nome(dto.getNome())
-                .email(dto.getEmail())
-                .senha(dto.getSenha())
+                .nome(usuarioDto.getNome())
+                .email(usuarioDto.getEmail())
+                .senha(usuarioDto.getSenha())
                 .build();
         try {
-            return new ResponseEntity(service.salvar(usuario), HttpStatus.CREATED);
+            return new ResponseEntity(usuarioService.salvar(usuario), HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody UsuarioDto dto) {
+    public ResponseEntity autenticar(@RequestBody UsuarioDto usuarioDto) {
         try {
-            Usuario usuario = service.autenticar(dto.getEmail(), dto.getSenha());
-            return ResponseEntity.ok(usuario);
+            return ResponseEntity.ok(usuarioService.autenticar(usuarioDto.getEmail(), usuarioDto.getSenha()));
         } catch (AutenticacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
