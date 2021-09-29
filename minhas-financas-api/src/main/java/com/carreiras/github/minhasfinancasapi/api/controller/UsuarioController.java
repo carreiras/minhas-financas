@@ -4,14 +4,15 @@ import com.carreiras.github.minhasfinancasapi.api.dto.UsuarioDto;
 import com.carreiras.github.minhasfinancasapi.exception.AutenticacaoException;
 import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
 import com.carreiras.github.minhasfinancasapi.model.entity.Usuario;
+import com.carreiras.github.minhasfinancasapi.service.LancamentoService;
 import com.carreiras.github.minhasfinancasapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final LancamentoService lancamentoService;
 
     @PostMapping
     public ResponseEntity salvar(@RequestBody UsuarioDto usuarioDto) {
@@ -42,4 +44,14 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/saldo")
+    public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
+        Optional<Usuario> usuario = usuarioService.obterPorId(id);
+        if (usuarioService.obterPorId(id).isEmpty())
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
+        return ResponseEntity.ok(saldo);
+    }
+
 }
