@@ -36,6 +36,14 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
+    @Transactional
+    public void deletar(Lancamento lancamento) {
+        Objects.requireNonNull(lancamento.getId());
+        lancamentoRepository.delete(lancamento);
+    }
+
+
+    @Override
     public void validar(Lancamento lancamento) {
         if (lancamento.getDescricao() == null || lancamento.getDescricao().trim().equals(""))
             throw new RegraNegocioException("Informe uma Descrição válida.");

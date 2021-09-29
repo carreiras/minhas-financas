@@ -45,6 +45,17 @@ public class LancamentoController {
                 .orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletar(@PathVariable("id") Long id) {
+        return lancamentoService.obterPorId(id)
+                .map(entity -> {
+                    lancamentoService.deletar(entity);
+                    return new ResponseEntity(HttpStatus.NO_CONTENT);
+                })
+                .orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+    }
+
+
     private Lancamento converter(LancamentoDto dto) {
         Usuario usuario = usuarioService.obterPorId(dto.getUsuario())
                 .orElseThrow(() -> new RegraNegocioException("Usuário não encontrado para o Id informado."));

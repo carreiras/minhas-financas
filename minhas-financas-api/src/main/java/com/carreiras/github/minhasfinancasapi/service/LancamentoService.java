@@ -10,6 +10,8 @@ public interface LancamentoService {
 
     Lancamento atualizar(Lancamento lancamento);
 
+    void deletar(Lancamento lancamento);
+
     void validar(Lancamento lancamento);
 
     Optional<Lancamento> obterPorId(Long id);
