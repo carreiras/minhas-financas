@@ -72,9 +72,8 @@ public class LancamentoController {
                 .ano(ano)
                 .build();
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-        if (!usuario.isPresent()) {
+        if (!usuario.isPresent())
             return ResponseEntity.badRequest().body("Consulta não realizada. Usuário não encontrado para o Id informado.");
-        }
         lancamento.setUsuario(usuario.get());
         List<Lancamento> lancamentos = lancamentoService.buscar(lancamento);
         return ResponseEntity.ok(lancamentos);
