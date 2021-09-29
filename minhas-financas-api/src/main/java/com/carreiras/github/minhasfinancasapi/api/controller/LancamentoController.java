@@ -1,6 +1,7 @@
 package com.carreiras.github.minhasfinancasapi.api.controller;
 
 
+import com.carreiras.github.minhasfinancasapi.api.dto.AtualizaStatusDto;
 import com.carreiras.github.minhasfinancasapi.api.dto.LancamentoDto;
 import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
 import com.carreiras.github.minhasfinancasapi.model.entity.Lancamento;
@@ -77,6 +78,24 @@ public class LancamentoController {
         lancamento.setUsuario(usuario.get());
         List<Lancamento> lancamentos = lancamentoService.buscar(lancamento);
         return ResponseEntity.ok(lancamentos);
+    }
+
+    @PutMapping("/{id}/atualizar-status")
+    public ResponseEntity atualizarStatus(@PathVariable Long id, @RequestBody AtualizaStatusDto atualizaStatusDto) {
+        return lancamentoService.obterPorId(id)
+                .map(entity -> {
+                    StatusLancamento status = StatusLancamento.valueOf(atualizaStatusDto.getStatus());
+                    if (status == null)
+                        return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento.");
+                    try {
+                        entity.setStatus(status);
+                        lancamentoService.atualizar(entity);
+                        return ResponseEntity.ok(entity);
+                    } catch (RegraNegocioException e) {
+                        return ResponseEntity.badRequest().body(e.getMessage());
+                    }
+                })
+                .orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
     private Lancamento converter(LancamentoDto dto) {

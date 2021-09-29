@@ -2,6 +2,7 @@ package com.carreiras.github.minhasfinancasapi.service.impl;
 
 import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
 import com.carreiras.github.minhasfinancasapi.model.entity.Lancamento;
+import com.carreiras.github.minhasfinancasapi.model.enums.StatusLancamento;
 import com.carreiras.github.minhasfinancasapi.model.repository.LancamentoRepository;
 import com.carreiras.github.minhasfinancasapi.service.LancamentoService;
 import org.springframework.data.domain.Example;
@@ -52,6 +53,12 @@ public class LancamentoServiceImpl implements LancamentoService {
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
         return lancamentoRepository.findAll(example);
+    }
+
+    @Override
+    public void atualizarStatus(Lancamento lancamento, StatusLancamento statusLancamento) {
+        lancamento.setStatus(statusLancamento);
+        atualizar(lancamento);
     }
 
     @Override
