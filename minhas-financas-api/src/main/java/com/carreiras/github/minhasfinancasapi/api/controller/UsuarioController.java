@@ -1,6 +1,7 @@
 package com.carreiras.github.minhasfinancasapi.api.controller;
 
 import com.carreiras.github.minhasfinancasapi.api.dto.UsuarioDto;
+import com.carreiras.github.minhasfinancasapi.exception.AutenticacaoException;
 import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
 import com.carreiras.github.minhasfinancasapi.model.entity.Usuario;
 import com.carreiras.github.minhasfinancasapi.service.UsuarioService;
@@ -29,6 +30,16 @@ public class UsuarioController {
         try {
             return new ResponseEntity(service.salvar(usuario), HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/autenticar")
+    public ResponseEntity autenticar(@RequestBody UsuarioDto dto) {
+        try {
+            Usuario usuario = service.autenticar(dto.getEmail(), dto.getSenha());
+            return ResponseEntity.ok(usuario);
+        } catch (AutenticacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

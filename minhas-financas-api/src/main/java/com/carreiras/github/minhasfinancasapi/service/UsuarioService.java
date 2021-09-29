@@ -9,4 +9,6 @@ public interface UsuarioService {
     void validarEmail(String email);
 
     Usuario salvar(Usuario usuario);
+
+    Usuario autenticar(String email, String senha);
 }
