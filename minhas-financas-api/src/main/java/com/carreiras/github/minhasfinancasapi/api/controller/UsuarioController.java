@@ -48,7 +48,7 @@ public class UsuarioController {
     @GetMapping("/{id}/saldo")
     public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
         Optional<Usuario> usuario = usuarioService.obterPorId(id);
-        if (usuarioService.obterPorId(id).isEmpty())
+        if (usuario.isEmpty())
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
         return ResponseEntity.ok(saldo);
