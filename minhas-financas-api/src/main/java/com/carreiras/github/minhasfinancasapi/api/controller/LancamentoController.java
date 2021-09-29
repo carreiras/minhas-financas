@@ -12,10 +12,7 @@ import com.carreiras.github.minhasfinancasapi.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,14 +23,30 @@ public class LancamentoController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity salvar(@RequestBody LancamentoDto dto) {
+    public ResponseEntity salvar(@RequestBody LancamentoDto lancamentoDto) {
         try {
-            Lancamento lancamento = converter(dto);
+            Lancamento lancamento = converter(lancamentoDto);
             lancamento = lancamentoService.salvar(lancamento);
             return new ResponseEntity(lancamento, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody LancamentoDto lancamentoDto) {
+        return lancamentoService.obterPorId(id)
+                .map(entity -> {
+                    try {
+                        lancamentoDto.setId(entity.getId());
+                        Lancamento lancamento = converter(lancamentoDto);
+                        lancamento = lancamentoService.atualizar(lancamento);
+                        return ResponseEntity.ok(lancamento);
+                    } catch (RegraNegocioException e) {
+                        return ResponseEntity.badRequest().body(e.getMessage());
+                    }
+                })
+                .orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
     private Lancamento converter(LancamentoDto dto) {
