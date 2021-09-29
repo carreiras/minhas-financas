@@ -85,12 +85,11 @@ public class LancamentoController {
         return lancamentoService.obterPorId(id)
                 .map(entity -> {
                     StatusLancamento status = StatusLancamento.valueOf(atualizaStatusDto.getStatus());
-                    if (status == null)
+                    if (StatusLancamento.valueOf(atualizaStatusDto.getStatus()) == null)
                         return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento.");
                     try {
                         entity.setStatus(status);
-                        lancamentoService.atualizar(entity);
-                        return ResponseEntity.ok(entity);
+                        return ResponseEntity.ok(lancamentoService.atualizar(entity));
                     } catch (RegraNegocioException e) {
                         return ResponseEntity.badRequest().body(e.getMessage());
                     }
