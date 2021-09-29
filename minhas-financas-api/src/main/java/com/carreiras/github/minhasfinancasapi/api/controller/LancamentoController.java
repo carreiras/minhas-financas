@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/lancamentos")
@@ -55,6 +58,26 @@ public class LancamentoController {
                 .orElseGet(() -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
     }
 
+    @GetMapping()
+    public ResponseEntity buscar(
+            @RequestParam(value = "descricao", required = false) String descricao,
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "ano", required = false) Integer ano,
+            @RequestParam("usuario") Long idUsuario
+    ) {
+        Lancamento lancamento = Lancamento.builder()
+                .descricao(descricao)
+                .mes(mes)
+                .ano(ano)
+                .build();
+        Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
+        if (!usuario.isPresent()) {
+            return ResponseEntity.badRequest().body("Consulta não realizada. Usuário não encontrado para o Id informado.");
+        }
+        lancamento.setUsuario(usuario.get());
+        List<Lancamento> lancamentos = lancamentoService.buscar(lancamento);
+        return ResponseEntity.ok(lancamentos);
+    }
 
     private Lancamento converter(LancamentoDto dto) {
         Usuario usuario = usuarioService.obterPorId(dto.getUsuario())

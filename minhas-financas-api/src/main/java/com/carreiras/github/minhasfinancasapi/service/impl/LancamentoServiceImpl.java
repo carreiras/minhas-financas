@@ -4,10 +4,13 @@ import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
 import com.carreiras.github.minhasfinancasapi.model.entity.Lancamento;
 import com.carreiras.github.minhasfinancasapi.model.repository.LancamentoRepository;
 import com.carreiras.github.minhasfinancasapi.service.LancamentoService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,6 +45,14 @@ public class LancamentoServiceImpl implements LancamentoService {
         lancamentoRepository.delete(lancamento);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Lancamento> buscar(Lancamento lancamento) {
+        Example example = Example.of(lancamento, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+        return lancamentoRepository.findAll(example);
+    }
 
     @Override
     public void validar(Lancamento lancamento) {
