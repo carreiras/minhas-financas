@@ -11,4 +11,6 @@ public interface UsuarioService {
     Usuario salvar(Usuario usuario);
 
     Usuario autenticar(String email, String senha);
+
+    Optional<Usuario> obterPorId(Long id);
 }

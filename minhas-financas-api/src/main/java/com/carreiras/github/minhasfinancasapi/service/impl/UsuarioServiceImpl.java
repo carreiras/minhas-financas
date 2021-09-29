@@ -42,4 +42,9 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new AutenticacaoException("Senha inválida");
         return foundUsuariobyEmail.get();
     }
+
+    @Override
+    public Optional<Usuario> obterPorId(Long id) {
+        return repository.findById(id);
+    }
 }
