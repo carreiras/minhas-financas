@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,5 +51,4 @@ public class UsuarioController {
         BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
         return ResponseEntity.ok(saldo);
     }
-
 }

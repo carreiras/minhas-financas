@@ -1,6 +1,5 @@
 package com.carreiras.github.minhasfinancasapi.api.controller;
 
-
 import com.carreiras.github.minhasfinancasapi.api.dto.AtualizaStatusDto;
 import com.carreiras.github.minhasfinancasapi.api.dto.LancamentoDto;
 import com.carreiras.github.minhasfinancasapi.exception.RegraNegocioException;
